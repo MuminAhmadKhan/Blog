@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Alert from './components/Alert'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import { createrAlert } from './Reducers/alertReducer'
+import { initialBlogs } from './Reducers/blogReducer'
 import blogService from './services/blogs'
 import  login  from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  //const [blogs, setBlogs] = useState([])
   const [name,setName] = useState('')
   const [password,setPassword] = useState('')
   const [user,setUser] = useState('')
   const [title,setTitle] = useState('')
   const [author,setAuthor] = useState('')
   const [url,setUrl] = useState('')
-  const [alert,setAlert]=useState(null)
+  //const [alert,setAlert]=useState(null)
   const [blogVisible,setBlogVisible]=useState(false)
   const [error,setError]=useState(null)
+  //const alert = useSelector(state.alert)
+  const dispatch = useDispatch()
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedinUser')
     if (loggedUserJSON) {
@@ -26,11 +31,12 @@ const App = () => {
   }, [])
 
   useEffect( () => {
-    const fetch_data =async ()=> { setBlogs( await blogService.getAll())}
-    fetch_data()
-     
+    const initialize = async () =>  dispatch(initialBlogs())
+    initialize()
       
   }, [])
+  const blogs = useSelector(state=>state.blog)
+  console.log(blogs)
   const handleVisibility = ()=>{
     setBlogVisible(!blogVisible)
   }
@@ -41,25 +47,27 @@ const App = () => {
     console.log(user)
     if(user.error){
       setError(true)
-      setAlert({'type':'danger','msg':'Failed Login'})
-      setTimeout(()=>setAlert(null),5000)
+      //setAlert({'type':'danger','msg':'Failed Login'})
+      
+      dispatch(createrAlert({'type':'danger','msg':'Failed Login'}))
+      setTimeout(()=>dispatch(createrAlert(null)),5000)
       
       return
     }
-    setAlert({'type':'success','msg':'Login'})
+    dispatch(createrAlert({'type':'success','msg':'Login'}))
     setUser(user.name)
     console.log("hi",user)
     window.localStorage.setItem('loggedinUser',JSON.stringify(user))
     blogService.setHeader(user.token)
     setName('')
     setPassword('')
-    setTimeout(()=>setAlert(null),5000)
+    setTimeout(()=>dispatch(createrAlert(null)),5000)
   }
   const handleLogout = async ()=>{
     localStorage.removeItem('loggedinUser')
     setUser('')
   } 
-  
+  console.log("lo")
    return (
     <>
       { !user && <div className="container my-3">
@@ -77,23 +85,23 @@ const App = () => {
   <button  className="btn btn-primary " id="Login" onClick={handleLogin}>Submit</button>
 </form>
 </div> }
-{user && <div>
-  <Alert alert={alert}/>
+{ user && <div>
+  <Alert />
   <button type="button" className="btn btn-primary" onClick={handleLogout}>Logout</button>
   </div>}
-     {user && <div>
+     {user &&   <div>
        {blogVisible?<button type="button" className="btn btn-primary" onClick={handleVisibility}>Hide Form</button>:<button type="button" className="btn btn-primary" onClick={handleVisibility}>Show Form</button>}
       {blogVisible && <div className="container">
-       <BlogForm setBlogs={setBlogs} setBlogVisible={setBlogVisible} blogs={blogs} blogVisible={blogVisible}/>
-       </div>}
+       <BlogForm  setBlogVisible={setBlogVisible}  blogVisible={blogVisible}/>
+     </div>}
     <h4>{user}</h4>
      <h2>blogs</h2>
      </div>}
-      {user && blogs.sort((a,b)=>b.likes-a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs}setBlogs={setBlogs} user={user} />
+      
+     {user && blogs.map(blog_ =>
+        <Blog key={blog_.id} blog={blog_}  user={user} />
       
       )}
-    
 
 
     </>

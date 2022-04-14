@@ -1,9 +1,8 @@
-
-
+import { useSelector } from "react-redux";
 
 function Alert(props) {
-    console.log(props.alert)
-  const  alert = props.alert
+    const alert = useSelector(state=>state.alert)
+
     const capitalize = (word)=>{
         const lower = word.toLowerCase();
         return lower.charAt(0).toUpperCase() + lower.slice(1);

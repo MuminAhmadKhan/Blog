@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { initialBlogs } from '../Reducers/blogReducer'
 
 import blogService from '../services/blogs'
 
 
 
 const BlogForm = (props) => {
-const {setBlogs,setBlogVisible,blogs,blogVisible}=props
+const {setBlogVisible,blogVisible}=props
     const [title,setTitle] = useState('')
   const [author,setAuthor] = useState('')
   const [url,setUrl] = useState('')
+  const dispatch = useDispatch()
+  const blogs = useSelector(state=>state.blog)
     const handleBlog = async (event)=>{
         event.preventDefault()
         console.log(blogs);
@@ -23,7 +27,7 @@ const {setBlogs,setBlogVisible,blogs,blogVisible}=props
         }
       
         try{
-       setBlogs( await blogService.getAll()) 
+       dispatch(initialBlogs()) 
        }
         catch{  
         }
