@@ -62,15 +62,28 @@ blogsRouter.get('/', async (request, response) => {
 
     } 
   })
-  blogsRouter.patch('/update/:id',async  (request, response) => {
+  blogsRouter.patch('/like/:id',async  (request, response) => {
     try {
     let blog = await Blog.findById(request.params.id)
+    console.log(typeof(request.params.id))
     blog.likes = blog.likes + 1
     saved_blog = await blog.save()
     response.status(201).json(saved_blog)
     } catch (error) {
       response.status(400)    } 
 
+  })
+  blogsRouter.patch('/comment/:id',async  (request, response) => {
+    try {
+      let blog = await Blog.findById(request.params.id)
+      //console.log(typeof(request.params.id))
+      blog.comments = blog.comments.concat(request.body.comment)
+      saved_blog = await blog.save()
+      response.status(201).json(saved_blog)
+      } catch (error) {
+        response.status(400)    } 
+  
+    
   })
   
 module.exports = blogsRouter

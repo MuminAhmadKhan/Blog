@@ -5,10 +5,12 @@ import {configureStore} from '@reduxjs/toolkit'
 import {Provider} from 'react-redux'
 import alertReducer from "./Reducers/alertReducer";
 import blogReducer from "./Reducers/blogReducer";
+import userReducer from "./Reducers/userReducer";
 const store = configureStore({
     reducer: {
      alert : alertReducer,
-     blog : blogReducer
+     blog : blogReducer , 
+     user : userReducer
     }
   })
 ReactDOM.render( 
