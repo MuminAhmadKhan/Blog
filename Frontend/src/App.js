@@ -8,19 +8,22 @@ import Users from './components/Users'
 import User from './components/User'
 import Blog from './components/Blog'
 import BlogView from './components/BlogView'
+import Navbar from './components/Navbar'
 
 
 const App = () => {
   return( 
     
     <Router>
-      <Link to='/users'>users</Link>
+     
+      <Navbar/>
       <Routes>
        
         <Route path="/users" element={<Users />} />
         <Route path="/" element={ <Login/>} />
         <Route path ='/users/:id' element = {<User/>}/>
         <Route path ='/blogs/:id' element = {<BlogView/>}/>
+       
       </Routes>
      
     </Router>
